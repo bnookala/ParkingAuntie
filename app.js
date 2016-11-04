@@ -81,7 +81,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 //bot.dialog('/', dialog);
 
 intents.matches(/^hello|hi/i, [
-    function (session) {
+		function (session) {
         session.send("Hello, how can I help you?");
         session.endDialog("");
     }
@@ -100,218 +100,194 @@ var docDbClient = new DocumentDBClient(config.host, {
 });
 var dbDao = new DbDao(docDbClient, config.databaseId, config.collectionId);
 var dbActions = new DbActions(dbDao);
-dbDao.init(function () {
 
-    dbActions.initQuestions(function (err, items) {
 
-        var q = items;
-        for (x in q) {
-            var fn = function (code) { // Immediately Invoked Function Expression
-                //return function (session, args) {
-                return function (session, args) {
+function buildIntent(intentDialog, intent) {
+	
+	intentDialog.matches(intent, function(session){		
+		session.beginDialog("/" + intent);		
+	});
+}
+	
+	
+function buildDialog(dataentry) {
+	
+	var txt = dataentry.description;
+	var entity = (txt.slice(0,1)!="{"?txt:JSON.parse(txt));
+	
+	(function(txtIntent, argentity) {
+		var type = typeof(argentity);
+		var waterfall_fn = [];
+		
+		if (type === "string") {
+			
+			waterfall_fn = [ function(session, args, fn){ 
+				session.endDialog(argentity);
+			} ];
+			
+		} else if (type === "object" ){
+			waterfall_fn = getWaterfall(argentity);		
+		}
+		
+		
+		
+		bot.dialog('/' + txtIntent, waterfall_fn);	
+		
+	})(dataentry.name, entity)
+	
+	
+}
+
+
+function getWaterfall(entity){
+	return [getFn1(entity), getFn2(entity)]
+}
+
+
+function getFn1(entity) {
+	
+	return (function(o, isChoice) {		
+		if (isChoice) {
+			return getChoices(o);
+		} else {
+			return getResponse(o)
+		}
+	})(entity, typeof(entity['choice']) != 'undefined' )	
+}
+
+function getFn2(entity) {
+	var o = entity;
+	
+	return function(session, results, next){
+
+		
+		if (results.response) {
+			var response = results.response.entity;
+			var is_response_valid = !(typeof(o.choice.options[response]) === "undefined")
+												
+			if (is_response_valid) {
+				session.beginDialog('/'+ o.choice.options[response])
+			} else {
+				session.endDialogWithResults(results);
+			}
+		} else {
+			session.endDialogWithResults(results);
+		}
+		
+	}
+	
+}
+
+
+function getChoices(entity) {
+	
+	var o = entity;
+	
+	return function(session, results) {
+	
+		var	options=[];
+							
+		for(option in o.choice.options){
+			options.push(option);
+		}
+											
+		var is_image_valid = !typeof(o.choice.image) === 'undefined';
+		var is_option_valid = !typeof(o.choice.options) === 'undefined';
+		
+		
+		if (!is_image_valid) {
+			builder.Prompts.choice(session, o.choice.question, options, { listStyle: style });		
+		} else {
+			
+			var buttons = [];
+		
+			if (is_option_valid) {		
+				for(option in o.choice.options){
+					buttons.push(builder.CardAction.imBack(session, option, option));
+				}
+			}
+			
+			
+			var msg = new builder.Message(session)	
+			.textFormat(builder.TextFormat.xml)
+			.attachmentLayout(builder.AttachmentLayout.carousel)
+			.attachments([
+				new builder.HeroCard(session)
+					.title(o.choice.titlemessage)
+					.text(o.choice.question )
+					.images([ builder.CardImage.create(session, o.choice.image) ])
+					.buttons(buttons)
+			]);
+			
+			builder.Prompts.choice(session, msg, options);	
+		}
+	}
+	
+}
+
+function getResponse(entity){
+	
+	var o = entity;
+	
+	return function(session, results){
+		
+		console.log()
+		
+		session.send(o.display.initmessage);
+		var is_multi_images = !typeof(o.display.mimages) === 'undefined';
+										
+		var	myimages=[];	
+		
+		for( image in o.display.mimages ){
+			var is_url_valid = typeof(o.display.mimages[image].imageurl) != "undefined";
+			var buttons = [];
+			if (is_url_valid) {
+				buttons.push(builder.CardAction.openUrl(session, o.display.mimages[image].imageurl, "View Image"));
+			}
+												
+			myimages.push(
+				new builder.HeroCard(session)
+					.title(o.display.mimages[image].title)
+					.text(o.display.mimages[image].text)
+					.images([
+						builder.CardImage.create(session, o.display.mimages[image].src)
+							])
+					.buttons(buttons)
+				)
+												
+			}
+											
+			var msg = new builder.Message(session)
+				.textFormat(builder.TextFormat.xml)
+				.attachmentLayout(builder.AttachmentLayout.carousel)
+				.attachments(myimages);
+			
+			session.endDialog(msg);
+		
+	}
+}
+
+
+dbDao.init(function(){
+	dbActions.initAnswers(function(err, items){
+		var a = items;		
+		for(x in a) { 
+			buildIntent(intents, a[x].name );
+			buildDialog( a[x] );	
+		}	
+	}) //end init answers
+});	
 
-                    var subtopic = "";
 
-                    for (i in args.entities) {
-                        var entity = args.entities[i]
-                        var type = entity.type;
-                    
-                        if (type === "Topic") {
-                            session.userData.topic = entity
-                        } else if (type === "subtopic") {
-                            subtopic = args.intents[0].intent + " ";
-                        }
-
-                        console.log('str ' + entity.type + ' ' + entity.entity)
-                    }
-
-
-
-
-                    //session.send("/" + code)
-                    session.beginDialog("/" + code);
-                }
-                //} () 
-            } (q[x].name);
-            intents.matches(q[x].name, fn);
-        }
-
-
-
-    }); // init questions
-
-
-    dbActions.initAnswers(function (err, items) {
-
-        var a = items;
-        for (x in a) {
-
-            bot.dialog('/' + function (code, object) { /* Immediately Invoked Function Expression */ return function () { return code; } () } (a[x].name),
-
-                function (code, obj) { /* Immediately Invoked Function Expression */
-                    return function () {
-                        var txt = obj.description;
-                        var acode = (txt.slice(0, 1) != "{" ? txt : JSON.parse(txt));
-
-                        var type = typeof (acode);
-
-                        var waterfall_fn = [];
-                        var o = acode;
-
-                        if (type === "string") {
-                            //console.log('str '+obj.name)
-                            waterfall_fn.push(function (session, args, fn) {
-                                session.send(obj.description);
-                                session.endDialog();
-                            })
-
-
-                        } else if (type === "object") {
-
-
-
-
-
-                            var fn1 = function (session, results) { //prompt
-
-                                var is_choice = !(typeof (o.choice) === "undefined")
-                                var is_display = !(typeof (o.display) === "undefined")
-                                if (is_choice) {
-                                    var options = [];
-
-                                    for (option in o.choice.options) {
-                                        options.push(option)
-                                        //options.push(o.choice.options[option]+":"+option)
-                                    }
-
-                                    var is_image_valid = !(typeof (o.choice.image) === "undefined")
-
-                                    var is_option_valid = !(typeof (o.choice.options) === "undefined")
-                                    if (is_option_valid) {
-                                        var buttons = [];
-                                        for (option in o.choice.options) {
-                                            buttons.push(builder.CardAction.imBack(session, option, option));
-                                        }
-                                    }
-                                    var msg = new builder.Message(session)
-                                        .textFormat(builder.TextFormat.xml)
-                                        .attachmentLayout(builder.AttachmentLayout.carousel)
-                                        .attachments([
-                                            new builder.HeroCard(session)
-                                                .title(o.choice.titlemessage)
-                                                .text(o.choice.question)
-                                                .images([
-                                                    builder.CardImage.create(session, o.choice.image)
-
-                                                ])
-                                                .buttons(buttons)
-                                        ]);
-                                    if (is_image_valid) {
-                                        builder.Prompts.choice(session, msg, options);
-
-                                    } else {
-                                        builder.Prompts.choice(session, o.choice.question, options, { listStyle: style });
-                                    }
-                                } else {
-
-
-                                    session.send(o.display.initmessage);
-                                    var is_multi_images = !(typeof (o.display.mimages) === "undefined")
-
-
-                                    var myimages = [];
-                                    for (image in o.display.mimages) {
-
-                                        var is_url_valid = !(typeof (o.display.mimages[image].imageurl) === "undefined")
-                                        if (is_url_valid) {
-                                            var buttons = [];
-
-                                            buttons.push(builder.CardAction.openUrl(session, o.display.mimages[image].imageurl, "View Image"));
-                                        }
-
-
-                                        myimages.push(
-                                            new builder.HeroCard(session)
-                                                .title(o.display.mimages[image].title)
-                                                .text(o.display.mimages[image].text)
-                                                .images([
-                                                    builder.CardImage.create(session, o.display.mimages[image].src)
-
-                                                ])
-                                                .buttons(buttons)
-
-                                        )
-
-                                    }
-
-                                    var msg = new builder.Message(session)
-                                        .textFormat(builder.TextFormat.xml)
-                                        .attachmentLayout(builder.AttachmentLayout.carousel)
-                                        .attachments(myimages);
-                                    session.endDialog(msg);
-
-                                }
-
-                            };
-
-                            waterfall_fn.push(fn1)
-
-
-                            var fn2 = function (session, results, next) { //prompt
-                                //session.send("f2");
-
-                                if (results.response) {
-                                    var response = results.response.entity;
-
-
-
-                                    var is_response_valid = !(typeof (acode.choice.options[response]) === "undefined")
-
-                                    if (is_response_valid) {
-
-                                        session.beginDialog('/' + acode.choice.options[response])
-                                    } else {
-                                        session.endDialogWithResults(results);
-                                    }
-
-
-                                } else {
-                                    session.endDialogWithResults(results);
-                                }
-                            }
-
-
-
-                            waterfall_fn.push(fn2)
-                        }
-
-
-                        //console.log(''+waterfall_fn)
-                        return waterfall_fn;
-
-
-
-                    } ()
-                } (a[x].name, a[x])
-            );
-
-
-        }
-
-
-
-    }) //end init answers
-
-
-
-});
 
 
 intents.onDefault(function (session) {
-    console.log(session.message)
-    session.send("Sorry, I'm not sure what you mean. Could you rephrase your question or provide more details?");
+	console.log(session.message)
+        session.send("Sorry, I'm not sure what you mean. Could you rephrase your question or provide more details?");
+		
+    })
+		
 
-})
 
-
+		
 bot.dialog('/', intents);
