@@ -78,7 +78,6 @@ var style = builder.ListStyle["button"];
 var model = 'https://api.projectoxford.ai/luis/v1/application?id=33d6986f-cd13-4711-a0c2-720bbdcae475&subscription-key=83808dbed6d84f4c94c2187d094103ec';
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
-//bot.dialog('/', dialog);
 
 intents.matches(/^hello|hi/i, [
 		function (session) {
@@ -91,6 +90,14 @@ intents.matches(/^hello|hi/i, [
 intents.matches(/^thank |thanks/i, [
     function (session) {
         session.send("You are welcome.");
+        session.endDialog("");
+    }
+]);
+
+intents.matches(/^PurchaseSP/i, [
+    function (session) {
+        session.sendTyping();
+        session.send("I see you would like to purchase season parking. Let me grab the details.");
         session.endDialog("");
     }
 ]);
