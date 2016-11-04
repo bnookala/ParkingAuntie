@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/cc84a3fe40424307bedb1d3abaeca4102f765800/documentdb/documentdb.d.ts",
+    "raw": "registry:dt/documentdb#0.0.0+20160815065520",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/cc84a3fe40424307bedb1d3abaeca4102f765800/documentdb/documentdb.d.ts"
+  }
+}
