@@ -116,7 +116,7 @@ dbDao.init(function () {
                     for (i in args.entities) {
                         var entity = args.entities[i]
                         var type = entity.type;
-
+                        console.log(args.entities[i]);
                         if (type === "Topic") {
                             session.userData.topic = entity
                         } else if (type === "subtopic") {
