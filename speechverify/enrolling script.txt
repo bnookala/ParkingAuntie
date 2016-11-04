@@ -1,0 +1,156 @@
+
+const identificationProfileId = "4c1bc0e6-e78c-4b85-a6d5-45c0fa7286df";
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<form id="file-form" action="handler.php" method="POST">
+  <input type="file" id="file-select" name="photos[]" multiple="">
+  <button type="submit" id="upload-button">Upload</button>
+</form>
+
+
+<script type="text/javascript">
+    $(function() {
+        var params = {
+            // Request parameters
+            "shortAudio": "true"
+        };
+      
+		var form = document.getElementById('file-form');
+		var fileSelect = document.getElementById('file-select');
+		var uploadButton = document.getElementById('upload-button');
+		
+		// Get the selected files from the input.
+		var files = fileSelect.files;
+		
+		// Create a new FormData object.
+		var formData = new FormData();
+		
+		// Loop through each of the selected files.
+		for (var i = 0; i < files.length; i++) {
+		  var file = files[i];
+
+		  
+		  // Add the file to the request.
+		  formData.append('audio', file, file.name);
+		}
+		
+	  
+        $.ajax({
+            url: "https://api.projectoxford.ai/spid/v1.0/identificationProfiles/4c1bc0e6-e78c-4b85-a6d5-45c0fa7286df/enroll?" + $.param(params),
+            beforeSend: function(xhrObj){
+                // Request headers
+                xhrObj.setRequestHeader("Content-Type","multipart/form-data");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","0c1a87dadfda4373a24a1cdc1fc5ac98");
+            },
+            type: "POST",
+            // Request body
+            data: formData,
+        })
+        .done(function(data) {
+            alert("success");
+        })
+        .fail(function() {
+            alert("error");
+        });
+    });
+</script>
+
+
+var form = document.getElementById('file-form');
+		var fileSelect = document.getElementById('file-select');
+		var uploadButton = document.getElementById('upload-button');
+		
+		// Get the selected files from the input.
+		var files = fileSelect.files;
+		
+		// Create a new FormData object.
+		var formData = new FormData();
+		
+		// Loop through each of the selected files.
+		for (var i = 0; i < files.length; i++) {
+		  var file = files[i];
+
+		  
+		  // Add the file to the request.
+		  formData.append('audio', file, file.name);
+		}
+
+$.ajax({
+            url: "https://api.projectoxford.ai/spid/v1.0/identificationProfiles/4c1bc0e6-e78c-4b85-a6d5-45c0fa7286df/enroll?shortAudio=false",
+            beforeSend: function(xhrObj){
+                // Request headers
+                //xhrObj.setRequestHeader("Content-Type","multipart/form-data; boundary=------WebKitFormBoundaryF7LeCGYzqV42pAwj");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","0c1a87dadfda4373a24a1cdc1fc5ac98");
+            },
+processData: false,contentType: false,
+    
+            type: "POST",
+            // Request body
+            data: formData,
+        })
+        .done(function(data) {
+            alert("success");
+        })
+        .fail(function() {
+            alert("error");
+        });
+		
+		
+		
+		
+		
+=== Verification Profile
+
+1. Create Verification Profile		
+
+2. Enroll voice
+
+var params = {
+            // Request parameters
+            "shortAudio": true
+        };
+
+
+var form = document.getElementById('file-form');
+		var fileSelect = document.getElementById('file-select');
+		var uploadButton = document.getElementById('upload-button');
+		
+		// Get the selected files from the input.
+		var files = fileSelect.files;
+		
+		// Create a new FormData object.
+		var formData = new FormData();
+		
+		// Loop through each of the selected files.
+		for (var i = 0; i < files.length; i++) {
+		  var file = files[i];
+
+		  
+		  // Add the file to the request.
+		  formData.append('audio', file, file.name);
+		}
+
+$.ajax({
+            url: "https://api.projectoxford.ai/spid/v1.0/verificationProfiles/bb3f093c-55cc-4eb3-aadd-af721cbf1419/enroll?" + $.param(params),
+            beforeSend: function(xhrObj){
+                // Request headers
+                //xhrObj.setRequestHeader("Content-Type","multipart/form-data; boundary=------WebKitFormBoundaryF7LeCGYzqV42pAwj");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","0c1a87dadfda4373a24a1cdc1fc5ac98");
+            },
+processData: false,contentType: false,
+    
+            type: "POST",
+            // Request body
+            data: formData,
+        })
+        .done(function(data) {
+            alert("success");
+        })
+        .fail(function() {
+            alert("error");
+        });
+
+		
+		
+		
+		

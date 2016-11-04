@@ -80,7 +80,8 @@ var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
 intents.matches(/^hello|hi/i, [
-		function (session) {
+    function (session) {
+        session.sendTyping();
         session.send("Hello, how can I help you?");
         session.endDialog("");
     }
@@ -89,6 +90,7 @@ intents.matches(/^hello|hi/i, [
 
 intents.matches(/^thank |thanks/i, [
     function (session) {
+        session.sendTyping();
         session.send("You are welcome.");
         session.endDialog("");
     }
