@@ -75,8 +75,7 @@ var style = builder.ListStyle["button"];
 //var intents = new builder.IntentDialog();
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
-//var model = 'https://api.projectoxford.ai/luis/v1/application?id=33d6986f-cd13-4711-a0c2-720bbdcae475&subscription-key=896bf1af48e14c74856a6f3cc9e5d8f4';
-var model = 'https://api.projectoxford.ai/luis/v1/application?id=33d6986f-cd13-4711-a0c2-720bbdcae475&subscription-key=9e2ce4043618486599a48227fb4b5998';
+var model = 'https://api.projectoxford.ai/luis/v1/application?id=33d6986f-cd13-4711-a0c2-720bbdcae475&subscription-key=83808dbed6d84f4c94c2187d094103ec';
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 //bot.dialog('/', dialog);
@@ -116,7 +115,7 @@ dbDao.init(function () {
                     for (i in args.entities) {
                         var entity = args.entities[i]
                         var type = entity.type;
-                        console.log(args.entities[i]);
+                    
                         if (type === "Topic") {
                             session.userData.topic = entity
                         } else if (type === "subtopic") {
