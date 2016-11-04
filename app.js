@@ -94,7 +94,7 @@ intents.matches(/^thank |thanks/i, [
     }
 ]);
 
-intents.matches(/^PurchaseSP/i, [
+intents.matches('PurchaseSP', [
     function (session) {
         session.sendTyping();
         session.send("I see you would like to purchase season parking. Let me grab the details.");
