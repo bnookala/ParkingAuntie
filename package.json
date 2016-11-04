@@ -1,0 +1,9 @@
+{
+  "name": "parking-auntie",
+  "version": "0.0.0",
+  "description": "ParkingAuntie",
+  "main": "app.js",
+  "author": {
+    "name": "wallace"
+  }
+}
