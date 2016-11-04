@@ -1,9 +1,26 @@
 {
   "name": "parking-auntie",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "ParkingAuntie",
   "main": "app.js",
-  "author": {
-    "name": "wallace"
+  "author": "wallace",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/judybot/ParkingAuntie.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/judybot/ParkingAuntie/issues"
+  },
+  "homepage": "https://github.com/judybot/ParkingAuntie#readme",
+  "dependencies": {
+    "@types/bluebird": "^3.0.35",
+    "bluebird": "^3.4.6",
+    "botbuilder": "^3.4.4",
+    "request": "^2.78.0",
+    "restify": "^4.2.0"
   }
 }

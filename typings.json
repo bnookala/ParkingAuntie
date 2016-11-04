@@ -1,5 +1,11 @@
 {
   "globalDependencies": {
-    "node": "registry:dt/node#6.0.0+20161019125345"
+    "bluebird": "registry:dt/bluebird#3.0.0+20160928162057",
+    "node": "registry:dt/node#6.0.0+20161019125345",
+    "request": "registry:dt/request#0.0.0+20160726020908",
+    "restify": "registry:dt/restify#2.0.0+20160928142801"
+  },
+  "dependencies": {
+    "bluebird": "registry:npm/bluebird#3.4.1+20160909132857"
   }
 }
