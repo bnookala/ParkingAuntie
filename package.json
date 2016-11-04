@@ -18,6 +18,7 @@
   "homepage": "https://github.com/judybot/ParkingAuntie#readme",
   "dependencies": {
     "@types/bluebird": "^3.0.35",
+    "async": "^2.1.2",
     "bluebird": "^3.4.6",
     "botbuilder": "^3.4.4",
     "documentdb": "^1.10.0",

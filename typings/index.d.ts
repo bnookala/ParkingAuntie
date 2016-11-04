@@ -1,3 +1,4 @@
+/// <reference path="globals/async/index.d.ts" />
 /// <reference path="globals/bluebird/index.d.ts" />
 /// <reference path="globals/documentdb/index.d.ts" />
 /// <reference path="globals/node/index.d.ts" />
