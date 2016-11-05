@@ -42,7 +42,7 @@
 							<h2>1. Create Person</h2>
 							<div class="split style1">
 								<section class="addPerson">
-									<form method="post" action="https://api.projectoxford.ai/face/v1.0/persongroups/hdbc001/persons">
+									<form method="post" action="https://api.projectoxford.ai/face/v1.0/persongroups/parkingauntie-group-1/persons">
 										<div class="field first">
 											<label for="name">Name</label>
 											<input type="text" name="name" id="name" />
@@ -58,7 +58,7 @@
 							<h2>2. Add Face</h2>
 							<div class="split style1">
 								<section class="addFace">
-									<form method="post" action="https://api.projectoxford.ai/face/v1.0/persongroups/hdbc001/persons">										
+									<form method="post" action="https://api.projectoxford.ai/face/v1.0/persongroups/parkingauntie-group-1/persons">										
 										<div class="field  ">
 											<label for="name">Person ID</label>
 											<input type="text" name="personId" id="personId" />
@@ -154,12 +154,12 @@
 					
 				  
 					$.ajax({
-						url: "https://api.projectoxford.ai/face/v1.0/persongroups/hdbc001/persons/" + $('#personId').val() + "/persistedFaces" ,
+					    url: "https://api.projectoxford.ai/face/v1.0/persongroups/parkingauntie-group-1/persons/" + $('#personId').val() + "/persistedFaces",
 						beforeSend: function(xhrObj){
 							// Request headers
 							xhrObj.setRequestHeader("Content-Type",'application/json');
 							
-							xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","eae8e7413ad948edb1dcfbb9b198ca34");
+							xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "249475382ada438888c7a3179ec75ccd");
 						},
 						
 						type: "POST",
@@ -188,11 +188,11 @@
 					
 				  
 					$.ajax({
-						url: "https://api.projectoxford.ai/face/v1.0/persongroups/hdbc001/persons/" ,
+					    url: "https://api.projectoxford.ai/face/v1.0/persongroups/parkingauntie-group-1/persons/",
 						beforeSend: function(xhrObj){
 							// Request headers
 							xhrObj.setRequestHeader("Content-Type","application/json");
-							xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","eae8e7413ad948edb1dcfbb9b198ca34");
+							xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "249475382ada438888c7a3179ec75ccd");
 						},
 						type: "POST",
 						// Request body
