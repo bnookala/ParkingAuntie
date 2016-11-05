@@ -100,6 +100,7 @@ intents.matches('PurchaseSP', [
     function (session) {
         session.sendTyping();
         session.send("I see you would like to purchase season parking. Let me grab the details.");
+
         session.endDialog("");
     }
 ]);
