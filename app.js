@@ -33,7 +33,17 @@ var connector = new builder.ChatConnector({
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
-console.log("connected");
+
+
+var calling = require('botbuilder-calling');
+var callconnector = new calling.CallConnector({
+    callbackUrl: "https://9e629178.ngrok.io/api/calls",
+    aappId: "683b7c37-cb27-4e6b-b1eb-1699a240925c",
+    appPassword: "ooacdSxLkse9QRHp3Gzz6Xt"
+});
+
+var callbot = new calling.UniversalCallBot(callconnector);
+server.post('/api/calls', callconnector.listen());
 
 
 // Create calling bot
@@ -52,7 +62,7 @@ var callconnector = new calling.CallConnector({
 });
 
 
-console.log(callconnector);
+//console.log(callconnector);
 
 
 var callbot = new calling.UniversalCallBot(callconnector);
@@ -322,25 +332,6 @@ function getResponse(entity){
 		
 	}
 }
-
-
-function queryCollection(name) {
-
-    docDbClient.queryDocuments(collectionUrl, 'SELECT * FROM root r WHERE r.name = "' + name + '"').toArray(function (err, results) {
-        if (err) return callback(err)
-        else {
-            for (var queryResult of results) {
-
-                var resultString = JSON.stringify(queryResult);
-                user = JSON.parse(resultString);
-                
-            }
-        
-        }
-    });
-
-}
-
 
 dbDao.init(function(){
 	dbActions.initAnswers(function(err, items){

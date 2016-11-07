@@ -4,7 +4,7 @@ var geocoder = require('geocoder');
 var https = require('https');
 var xml2js = require('xml2js');
 var async = require('async');
-var builder = require('botbuilder');
+var builder = require('botbuilder'); 
 
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
@@ -606,3 +606,4 @@ function calculatedistance(lat1, lon1, lat2, lon2, unit) {
 
 
 exports.init = NearBySPApp;
+
