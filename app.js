@@ -29,7 +29,16 @@ var connector = new builder.ChatConnector({
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
-console.log("connected");
+
+
+var calling = require('botbuilder-calling');
+var callconnector = new calling.CallConnector({
+    aappId: "683b7c37-cb27-4e6b-b1eb-1699a240925c",
+    appPassword: "ooacdSxLkse9QRHp3Gzz6Xt"
+});
+
+var callbot = new calling.UniversalCallBot(callconnector);
+server.post('/api/calls', callconnector.listen());
 
 
 var face = require("./faceverify/faceverify");
