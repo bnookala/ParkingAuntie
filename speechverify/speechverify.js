@@ -32,6 +32,19 @@ function Speech(argbot, argbuilder, connector, callbot) {
 		 serviceUrl: 'https://skype.botframework.com',
 		 useAuth: true };
 	*/
+	//parkingauntie address
+	address = { id: '4HDebukzX3TB5QlE',
+	   channelId: 'skype',
+	   user:
+		{ id: '29:1oTN1ejkyp07wweSpi5AoqmnnNtXU1cVCCwKJgF1uHkc',
+		  name: 'Carpark Auntie' },
+	   conversation: { id: '29:1oTN1ejkyp07wweSpi5AoqmnnNtXU1cVCCwKJgF1uHkc' },
+	   bot:
+		{ id: '28:683b7c37-cb27-4e6b-b1eb-1699a240925c',
+		  name: 'Parking Auntie' },
+	   serviceUrl: 'https://skype.botframework.com',
+	   useAuth: true };
+	
 	
 	
 	

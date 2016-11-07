@@ -21,7 +21,9 @@
     "async": "^2.1.2",
     "bluebird": "^3.4.6",
     "botbuilder": "^3.4.4",
+    "botbuilder-calling": "^3.0.1",
     "documentdb": "^1.10.0",
+    "geocoder": "^0.2.2",
     "request": "^2.78.0",
     "restify": "^4.2.0"
   }

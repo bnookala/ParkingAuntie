@@ -26,8 +26,27 @@ function MAP(argbot, argbuilder, argface, argspeech) {
 		  serviceUrl: 'https://skype.botframework.com',
 		  useAuth: true };
 	var address = {"id":"2gDULokzVIfWnHhg","channelId":"skype","user":{"id":"29:1TSjWoozHvWGgqzM6m2Cgq2ofBC8wOg3E7myP_ABNzLE","name":"Judy Bot"},"conversation":{"id":"29:1TSjWoozHvWGgqzM6m2Cgq2ofBC8wOg3E7myP_ABNzLE"},"bot":{"id":"28:754ba270-9a63-4971-b56e-db1319d3d433","name":"testCallingBot"},"serviceUrl":"https://skype.botframework.com","useAuth":true};
+	
+	//parkingauntie address
+	address = { id: '4HDebukzX3TB5QlE',
+	   channelId: 'skype',
+	   user:
+		{ id: '29:1oTN1ejkyp07wweSpi5AoqmnnNtXU1cVCCwKJgF1uHkc',
+		  name: 'Carpark Auntie' },
+	   conversation: { id: '29:1oTN1ejkyp07wweSpi5AoqmnnNtXU1cVCCwKJgF1uHkc' },
+	   bot:
+		{ id: '28:683b7c37-cb27-4e6b-b1eb-1699a240925c',
+		  name: 'Parking Auntie' },
+	   serviceUrl: 'https://skype.botframework.com',
+	   useAuth: true };
+	
+	
+	
 	var msg = new builder.Message();
 	msg.address(address),
+	
+	
+	
 	
 	
 	this.suggest = function(cb) {			
@@ -175,28 +194,9 @@ function MAP(argbot, argbuilder, argface, argspeech) {
 	]);
 	
 	bot.dialog('/paySP2', [ function (session) {		
-		var msg = session.userData.name + ", for tighter security please upload a wav file for verification, use the phrase: \"Im going to make him an offer he can't refuse\"";
-		builder.Prompts.attachment(session, msg);
-		},
-		
-		function (session, results){
-			
-			if (results.response) {
-				var attachment = results.response[0];
-				// Verify
-				
-				speech.verify(session, attachment.contentUrl);
-				
-			} else {
-
-				// No attachments were sent
-				var reply = new builder.Message(session)
-					.text('Please upload a wav file for verification.');
-				session.send(reply);
-			}
-			
-			
-		}	
+		var msg = session.userData.name + ", for tighter security please make a call to verify your voice, use the phrase: \"Im going to make him an offer he can't refuse\"";
+		session.endDialog(msg);
+		}
 	]);
 	
 	

@@ -26,10 +26,37 @@ var connector = new builder.ChatConnector({
 	
     appId: "683b7c37-cb27-4e6b-b1eb-1699a240925c",
     appPassword: "ooacdSxLkse9QRHp3Gzz6Xt"
+	//judybot
+	//appId: "945fc654-8c53-415d-98f3-defd99c077b4",
+    //appPassword: "1QsZho2VqxGguMht04DMpUd"
+	
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 console.log("connected");
+
+
+// Create calling bot
+
+var calling = require('botbuilder-calling');
+var callconnector = new calling.CallConnector({
+    callbackUrl: "https://9e629178.ngrok.io/api/calls",
+	//appId: "3e36aefa-0639-4eb3-bdf9-842d71d02e37", //test chatbot
+    //appPassword: "xsiqqREobifBRgaJrG4A2RP"
+    //judybot
+	//appId: "945fc654-8c53-415d-98f3-defd99c077b4",
+    //appPassword: "1QsZho2VqxGguMht04DMpUd"
+	//parking auntie
+	appId: "683b7c37-cb27-4e6b-b1eb-1699a240925c",
+    appPassword: "ooacdSxLkse9QRHp3Gzz6Xt"
+});
+
+
+console.log(callconnector);
+
+
+var callbot = new calling.UniversalCallBot(callconnector);
+server.post('/api/calls', callconnector.listen());
 
 
 var face = require("./faceverify/faceverify");
@@ -42,8 +69,7 @@ maps = new maps.MAP(bot, builder, face, speech);
 var person = require("./notify/notify");
 person = new person.Person(bot, builder, maps);
 
-var locator = require("./nearbysp/nearbysp");
-locator = new locator.Locator(bot, builder);
+
 
 //=========================================================
 // Activity Events
@@ -107,6 +133,7 @@ var collectionUrl = `${databaseUrl}/colls/${config.userCollectionId}`;
 
 intents.matches(/^hello|hi/i, [
     function (session) {
+		console.log(session.message)
         session.sendTyping();
         session.send("Hello, how can I help you?");
         session.endDialog("");
@@ -337,5 +364,50 @@ intents.onDefault(function (session) {
 		
 
 
+var nearBySPApp = require("./nearbysp/nearbysp");
+nearBySPApp.init(bot, intents)		
+		
 		
 bot.dialog('/', intents);
+
+
+server.get('/notify', function(req, res){
+  person.notify();
+  res.send("ok, notifying");
+})
+
+callbot.dialog('/', [
+		function (callsession) {
+			//callsession.send("please record after the beep");
+			calling.Prompts.record(callsession, "Please leave a message after the beep.", { recordingFormat: 'wav', playBeep: true });
+		},
+		function er(callsession, results, next) {
+			var audioData = null;
+			if (results.response) {
+				
+				//console.log(results.response.recordedAudio)
+				console.log(speech)
+				 
+				audioData = results.response.recordedAudio
+				//callsession.userData.audio = audioData;
+				
+				speech.verify(callsession, audioData)
+				
+				//callsession.endDialog("recording %d", results.response.lengthOfRecordingInSecs);
+				
+				
+				// Delete conversation field from address to trigger starting a new conversation.
+				//var address = callsession.message.address;
+				//delete address.conversation;
+								
+				
+				
+				//callsession.endDialog("voice print captured");
+				//bot.beginDialog(address, "/verifyvoice");
+			} else {
+				callsession.endDialog("cancelled");
+			}
+		}
+		
+	]);
+
