@@ -296,25 +296,6 @@ function getResponse(entity){
 	}
 }
 
-
-function queryCollection(name) {
-
-    docDbClient.queryDocuments(collectionUrl, 'SELECT * FROM root r WHERE r.name = "' + name + '"').toArray(function (err, results) {
-        if (err) return callback(err)
-        else {
-            for (var queryResult of results) {
-
-                var resultString = JSON.stringify(queryResult);
-                user = JSON.parse(resultString);
-                
-            }
-        
-        }
-    });
-
-}
-
-
 dbDao.init(function(){
 	dbActions.initAnswers(function(err, items){
         var a = items;
