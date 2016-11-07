@@ -2,6 +2,7 @@
 var config = require('./config');
 var DbActions = require('./routes/dbactions');
 var DbDao = require('./models/dbDao');
+var url = require('url');
 
 
 
@@ -17,7 +18,7 @@ var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
-
+ 
 // Create chat bot
 var connector = new builder.ChatConnector({
     //appId: process.env.APP_ID,
@@ -28,7 +29,22 @@ var connector = new builder.ChatConnector({
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
-console.log("connected")
+console.log("connected");
+
+
+var face = require("./faceverify/faceverify");
+face = new face.Face(bot, builder, connector);
+var speech = require("./speechverify/speechverify");
+speech = new speech.Speech(bot, builder, connector, callbot);
+
+var maps = require("./maps/maps");
+maps = new maps.MAP(bot, builder, face, speech);
+var person = require("./notify/notify");
+person = new person.Person(bot, builder, maps);
+
+var locator = require("./nearbysp/nearbysp");
+locator = new locator.Locator(bot, builder);
+
 //=========================================================
 // Activity Events
 //=========================================================
@@ -79,6 +95,16 @@ var model = 'https://api.projectoxford.ai/luis/v1/application?id=33d6986f-cd13-4
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
+var docDbClient = new DocumentDBClient(config.host, {
+    masterKey: config.authKey
+});
+var dbDao = new DbDao(docDbClient, config.databaseId, config.collectionId);
+var dbActions = new DbActions(dbDao);
+
+var HttpStatusCodes = { NOTFOUND: 404 };
+var databaseUrl = `dbs/${config.databaseId}`;
+var collectionUrl = `${databaseUrl}/colls/${config.userCollectionId}`;
+
 intents.matches(/^hello|hi/i, [
     function (session) {
         session.sendTyping();
@@ -100,21 +126,14 @@ intents.matches('PurchaseSP', [
     function (session) {
         session.sendTyping();
         session.send("I see you would like to purchase season parking. Let me grab the details.");
-
         session.endDialog("");
     }
 ]);
 
-var docDbClient = new DocumentDBClient(config.host, {
-    masterKey: config.authKey
-});
-var dbDao = new DbDao(docDbClient, config.databaseId, config.collectionId);
-var dbActions = new DbActions(dbDao);
-
-
 function buildIntent(intentDialog, intent) {
 	
-	intentDialog.matches(intent, function(session){		
+    intentDialog.matches(intent, function (session) {		
+        session.sendTyping();
 		session.beginDialog("/" + intent);		
 	});
 }
@@ -278,15 +297,34 @@ function getResponse(entity){
 }
 
 
+function queryCollection(name) {
+
+    docDbClient.queryDocuments(collectionUrl, 'SELECT * FROM root r WHERE r.name = "' + name + '"').toArray(function (err, results) {
+        if (err) return callback(err)
+        else {
+            for (var queryResult of results) {
+
+                var resultString = JSON.stringify(queryResult);
+                user = JSON.parse(resultString);
+                
+            }
+        
+        }
+    });
+
+}
+
+
 dbDao.init(function(){
 	dbActions.initAnswers(function(err, items){
-		var a = items;		
+        var a = items;
+	    var x=0;	
 		for(x in a) { 
 			buildIntent(intents, a[x].name );
 			buildDialog( a[x] );	
 		}	
 	}) //end init answers
-});	
+});
 
 
 
