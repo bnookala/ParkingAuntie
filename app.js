@@ -31,8 +31,9 @@ var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
 
-var calling = require('botbuilder');
+var calling = require('botbuilder-calling');
 var callconnector = new calling.CallConnector({
+    callbackUrl: "https://9e629178.ngrok.io/api/calls",
     aappId: "683b7c37-cb27-4e6b-b1eb-1699a240925c",
     appPassword: "ooacdSxLkse9QRHp3Gzz6Xt"
 });
